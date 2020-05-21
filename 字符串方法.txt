@@ -86,7 +86,7 @@ dic.clear()清空
 
 enumerate()为迭代器添加序号
 
-对象
+(对象)
 __new__(cls) 创建对象，先创建，后初始化
 __init__(self) 初始化
 __del__(self) 删除时执行
@@ -120,7 +120,7 @@ with open('222.txt','r') as f:
     f.seek(2,0) 第1个参数：偏移量  第2个参数：定位（0开头，1不变，2结尾）
 
 
-os模块
+(os模块)
 os.rename(旧名，新名)
 os.remove(文件名)
 os.mkdir(目录名) 创建单层目录
@@ -138,7 +138,7 @@ os.path.isabs(路径) 判断是否是绝对路径
 os.path.basename(路径) 获取路径最后部分
 os.path.dirname(路径) 获取文件所在目录
 
-线程
+(线程)
 threading.Thread(target=方法,args=(参数,参数) 创建一个线程变量
 threading.currentThread() 返回当前线程
 threading.enumerate() 返回一个包含所有（启动后且未结束）的线程列表
@@ -154,8 +154,7 @@ mutex.release() 释放
 
 
 
-正则表达式
-
+(正则表达式)
 表达式|表达式  匹配左边或右边的表达式
 ()  分组
 (?P<name>)  分组起名
@@ -192,3 +191,128 @@ ret.match(内容)
 $   匹配以xxx结尾的字符串
 Python中默认是贪婪，总是尝试尽可能多的匹配字符，非贪婪相反，总是尽可能少的匹配字符
 ret = re.match("\d{2,5}","12345")  匹5次
+
+(git)
+添加快照：git add
+状态检查：git status
+代码提交：git commit
+差异排查：git diff
+历史记录：git log
+如果提交版本信息过多，可以只查看前 n 条信息
+git log -n 2
+git log --after='2020-2-4 9:55:00'
+如果协同开发人数较多，可以指定查看某个作者提交的版本信息
+git log --author="laomu" -n 2
+回滚：git reset HEAD
+分支操作：git branch
+创建分支：git branch <branch>
+查看分支：git branch
+切换分支：git checkout <branch>
+删除分支：git branch -d <branch>
+合并分支：git merge
+远程仓库添加：git remote
+远程代码提取：git pull
+远程仓库推送：git push
+
+(SHELL 脚本)
+sh test.sh  执行脚本
+bash test.sh  执行脚本
+./test.sh  执行脚本
+chmod u+x test.sh  添加执行权限
+
+#!/bin/sh  开头格式
+echo "当前 shell 脚本的文件名：$0"
+echo "接收到的第一个参数：$1"
+echo "接收到的第二个参数：$2"
+echo "接受的所有参数:$*"
+echo "接受的所有参数:$@"
+echo "接受的参数个数：$#"
+echo "当前程序运行 PID 时：$$"
+echo "上一个命令执行的返回结果：$?"
+
+[root@localhost scripts]# echo "this is $(date +%Y) year"
+this is 2019 year
+[root@localhost scripts]# echo "this is $(($(date +%Y)+1)) year"
+this is 2020 year
+[root@localhost scripts]# echo "this is $((`date +%Y`+1)) year"
+this is 2020 year
+
+read -p "清输入您哟啊备份的目录：" bak_path   #录入变量
+echo -e "\033[30m 黑色字 \033[0m"
+echo -e "\033[31m 红色字 \033[0m"
+echo -e "\033[32m 绿色字 \033[0m"
+echo -e "\033[33m 黄色字 \033[0m"
+echo -e "\033[34m 蓝色字 \033[0m"
+echo -e "\033[35m 紫色字 \033[0m"
+echo -e "\033[36m 天蓝字 \033[0m"
+echo -e "\033[37m 白色字 \033[0m"
+echo -e "\033[40;37m 黑底白字 \033[0m"
+echo -e "\033[41;37m 红底白字 \033[0m"
+echo -e "\033[42;37m 绿底白字 \033[0m"
+echo -e "\033[43;37m 黄底白字 \033[0m"
+echo -e "\033[44;37m 蓝底白字 \033[0m"
+echo -e "\033[45;37m 紫底白字 \033[0m"
+echo -e "\033[46;37m 天蓝底白字 \033[0m"
+echo -e "\033[47;30m 白底黑字 \033[0m"
+条件 1 && 条件真执行的代码
+条件 1 || 条件假执行的代码
+
+read -p "请输入您的选项：" choice
+if [ $choice -eq 1 ]; then
+echo "选项 1"
+elif [ $choice -eq 2 ]; then
+echo "选项 2"
+elif [ $choice -eq 3 ]: then
+echo "选项 3"
+else
+echo "没有这个选项"
+fi
+
+参数 说明                  示例
+-e 判断文件或者目录是否存在 [ -e file ]
+-s 判断文件存在且至少一个字符为真 [ -s file ]
+-d 判断文件存在且为目录 [ -d file ]
+-f 判断文件存在且为普通文件 [ -f file ]
+-r 判断文件存在且为可读 [ -r file ]
+-w 判断文件存在且为可写 [ -w file ]
+-x 判断文件存在且为可执行 [ -x file ]
+#!/bin/sh
+# 判断是否存在
+if [ -e "$1" ]; then
+echo "exists"
+else
+echo "not exists"
+fi
+
+= 判断是否相等 [ s1 = s2]
+!= 判断是否不相等 [ s2 != s2 ]
+-z 判断长度是否为 0 [ -z s ]
+-n 判断字符串不为空 [ -n s ]
+s1 > s2 [ s1 > s2 ]
+s1 < s2 [ s1 < s2 ]
+
+&& 并且关系 [ 12 -gt 20 && 10 -eq 10]
+|| 或者关系 [ 12 -gt 20 || 10 -eq 10]
+! 取反 [ ! 12 -gt 20]
+-a 并且关系 and [ 12 -gt 20 -a 10 -eq 10]
+-o 或者关系 or [ 12 -gt 20 -o 10 -eq 10]
+
+case 变量 in
+变量 1)
+命令序列 1;;
+变量 2)
+命令序列 2;;
+*)
+无匹配后命令序列
+esac
+
+#!/bin/sh
+for var in {1..100}
+do
+echo "循环数字是：$var"
+done
+echo --------
+for (( i=0; i<10; i++ ))
+do
+echo "循环数字：$i"
+done
