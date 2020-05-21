@@ -1,0 +1,194 @@
+﻿str  =  引号包围，有序，不可修改，字符是长度1的字符串
+字符串.center(宽度,填充符号)=居中
+字符串.ljust(宽度,填充符号)=左对齐
+字符串.rjust(宽度,填充符号)=右对齐
+字符串.zfill(宽度)=右对齐，用0填充
+print("{} is {} years old".format("laobian",18)) = laobian is 18 years old =插入变量  (常用)
+print("\n".join("abc")) = a\nb\nc =把 (前)字符串插入另一(后)字符串每个元素间
+print("   hello   ".strip()) = hello =删除字符串两端指定字符，默认删除空格
+print("   hello   ".lstrip()) =删除字符串左端指定字符，默认删除空格
+print("   hello   ".rstrip()) =删除字符串右端指定字符，默认删除空格
+
+字符串.capitalize()=只有字符串的首字母大写
+字符串.lower()=全部变小写
+字符串.upper()=全部变大写
+字符串.swapcase()=大小写互换
+字符串.title()=所有单词首字母大写  ，以空格分割
+
+字符串.isalnum()=判断字符串是否完全由字母和数字组成
+字符串.isalpha()=判断字符串是否完全由字母组成
+字符串.isdigit()=判断字符串是否完全由数字组成 (常用)
+字符串.islower()=判断字符串当中字母是否完全由小写组成
+字符串.isupper()=判断字符串当中字母是否完全由大写组成
+字符串.isspace()=判断字符串是否完全由空格组成
+字符串.istitle()=判断字符串是否符合title格式
+字符串.startswith("H",1,2)=判断字符串是否以指定字符串开头
+字符串.endswith("D",1,3)=判断字符串是否以指定字符串结尾
+
+字符串.find("e")=从左往右找，返回索引，没找到就返回-1 (常用)
+字符串.index("e")=从左往右找，返回索引，没找到就报错 (常用)
+字符串.rfind("e")=从右往左找，返回索引，没找到就返回-1 (常用)
+字符串.rindex("e")=从右往左找，返回索引，没找到就报错 (常用)
+字符串.count("e")=计数 (常用)
+
+字符串.split("e")=从左到右以e来切分，默认用空格  maxsplit=1  -->只切第一个 (常用)
+字符串.rsplit("e")=从右到左以e来切分，默认用空格
+字符串.splitlines(False)=从左到右以换行来切分，不保留换行符 (常用)
+字符串.splitlines(True)=从左到右以换行来切分，保留换行符 (常用)
+字符串.replace("旧","新",次数)=替换字符
+字符串.encode("hello")=转成字节
+字符串.partition("")=把 mystr 以 str 分割成三部分,str 前，str 自身和 str 后 (常用)
+字符串.rpartition("")= 从右开始把 mystr 以 str 分割成三部分,str 前，str 自身和 str 后 (常用)
+字符串.translate=按照对应关系来替换内容 from string import maketrans
+
+list    [1,2,"A","ASFASF",A]   逗号分隔，中括号包围，有序，可以修改
+列表.append("hello")=列表尾部追加元素（整个加）
+列表.insert(1,"hello")=将元素插入指定索引位
+列表.extend("hello")=将序列元素依次添加到列表尾部（分解加）
+
+列表.sort()=从大到小排序
+列表.sort(reverse=True)=从小到大排序
+列表.reverse()=按照索引倒序
+列表.index("hello")=查找元素，返回索引，找不到就报错
+列表.count("hello")=计数
+
+列表.pop(1)=弹出尾部，可指定索引，会返回被删元素
+列表.remove("a")=删除指定元素，一次只删除一个,不存在时会报错
+列表.clear("hello")=清空
+列表.copy("hello")=复制，浅拷贝
+
+help(str.center)
+
+tup元组   (1,2,'1',[1,2,3],"123",(1,2,3))  逗号分隔，园括号包围，有序，不可修改
+tuple（"123456"）=('1','2','3','4','5','6')
+tup.index
+tup.count
+元组不可修改，方法少，稳定，通常用作配置文件
+单元素元组在元素后面必须加逗号，否则类型为元素类型
+
+字典：键与值，逗号分隔，大括号包围，无序，可修改
+dic={"name":"老边","age":18}
+dict(a=1,b=2,c=3)
+zip:1对1合并到一个元组当中（元组模式），以最短的序列作为参照，压缩，需转换
+dict(zip("abc","123"))
+list(zip("c","123","sdfg"))
+{}.fromkeys("abc")  值为空
+dic.keys() 所有键
+dic.values() 所有值
+dic.get("name","找不到时返回的东西") 返回指定值，找不到返回none或第二个参数而不是报错，比直接用键找值好
+dic.items() 元组模式，和zip相似
+dic.update({"name":1}) 更新，有就改，无就加
+dic.setdefault("names",1)设置默认值，有就不改，无就加
+dic.copy() 浅拷贝
+dic.pop("name") 弹出指定键的值
+dic.popitem()随机弹
+dic.clear()清空
+
+enumerate()为迭代器添加序号
+
+对象
+__new__(cls) 创建对象，先创建，后初始化
+__init__(self) 初始化
+__del__(self) 删除时执行
+__str__ 配合print输出自定义句子
+__repr__ 当对象包含在可变数据中配合print输出自定义句子
+__dict__ 查看对象所有属性
+__call__ 让对象能拥有类似函数的行为 对象()
+__eq__ 定义==的操作方法 return self.age==other.age
+			return self.__dict__==other.__dict__
+
+__ne__(self, other) 定义符号!=的操作
+__lt__(self, other) 定义符号<的操作
+__gt__(self, other) 定义符号>的操作
+__le__(self, other) 定义符号<=的操作
+__ge__(self, other) 定义符号>=的操作
+
+__cmp__(self, other)    return (self.age>other.age)-(self.age<other.age)
+			1 大于其他数、0 等于其他数、-1 小于其他数
+			对象1.__cmp__(对象2)
+
+类.__base__ 查看父类
+在子类方法内部 super().方法()  调用父类方法
+在外部 super(类,对象).方法()   调用父类方法
+isinstance(对象,类) 判断对象是否为某一类
+isinstance(a,list) 判断a是否为列表,可判断其他数据类型
+@staticmethod 静态方法 不会使用类属性
+@classmethod 类方法 会使用类属性
+
+with open('222.txt','r') as f:
+    print(f.tell()) 文件定位
+    f.seek(2,0) 第1个参数：偏移量  第2个参数：定位（0开头，1不变，2结尾）
+
+
+os模块
+os.rename(旧名，新名)
+os.remove(文件名)
+os.mkdir(目录名) 创建单层目录
+os.makedirs(目录名/目录名) 创建多层目录
+os.rmdir(目录名) 删除单层目录，只能删除空目录
+os.removedirs(目录名) 删除多层目录，只能删除空目录
+os.getcwd() 获取当前的绝对路径
+os.listdir(路径) 获取目录列表
+os.chdir(路径) 切换所在目录
+os.path.exists(文件) 判断文件或文件夹是否存在
+os.path.isfile(文件) 判断是否是文件
+os.path.isdir(文件) 判断是否是目录
+os.path.abspath(路径) 获取绝对路径
+os.path.isabs(路径) 判断是否是绝对路径
+os.path.basename(路径) 获取路径最后部分
+os.path.dirname(路径) 获取文件所在目录
+
+线程
+threading.Thread(target=方法,args=(参数,参数) 创建一个线程变量
+threading.currentThread() 返回当前线程
+threading.enumerate() 返回一个包含所有（启动后且未结束）的线程列表
+threading.activeCount() 返回正在运行线程的数量
+线程变量.getName() 获取线程名称
+线程变量.setName() 设置线程名称
+线程变量.is_alive() 获取线程状态(是否活跃)
+	.isAlive()
+
+mutex=threading.Lock() 创建锁
+mutex.acquire() 锁定
+mutex.release() 释放
+
+
+
+正则表达式
+
+表达式|表达式  匹配左边或右边的表达式
+()  分组
+(?P<name>)  分组起名
+(?P=name)  以分组名称引用分组匹配到的字符串
+\\1  以分组编号引用分组匹配到的字符串
+
+ret = re.match("正则表达式","要匹配的字符串")
+ret.group() 取内容
+re.match(x) 在开始位置匹配，匹配第一个符合的match对象，匹配不到返回None
+re.search() 扫描整个字符串，匹配第一个符合的match对象，匹配不到返回None
+re.findall() 扫描整个字符串，匹配所有符合的match对象并存放在列表，匹配不到返回None
+re.fullmatch() 扫描整个字符串，如果整个字符串都包含在正则表达式内，返回整个字符串，匹配不到返回None
+re.finditer() 扫描整个字符串，将匹配到的字符保存在一个可以历遍的列表中
+re.sub('\d+','0',content) 返回替换后的字符串，用0替换\d+
+re.split('\s+',content) 用正则表达式拆分内容，返回一个拆分后的列表
+ret=re.compile(表达式) 预编译，设置正则表达式
+ret.match(内容)
+
+.   表示匹配任意一个字符，除了\n(换行符)以外
+[]  匹配“[]”列举的字符
+\d  匹配数字，0-9
+\D  匹配非数字，即不是数字
+\s  匹配空格，包含空格和tab
+\S  匹配非空格
+\w  匹配单词字符：包含(a-z,A-Z,0-9,_)
+\W  匹配非单词字符
+{m} 匹配前一个字符出现m次
+{m,n} 匹配前一个字符出现m到n次
+?   前一个字符出现0次或者1次，那么出现1次，那么出现0次
+*   匹配前一个字符出现0次或多次
++   匹配前一个字符出现1次或多次，即至少出现1次
+^   匹配开头的字符串
+    用在[]中表示取反
+$   匹配以xxx结尾的字符串
+Python中默认是贪婪，总是尝试尽可能多的匹配字符，非贪婪相反，总是尽可能少的匹配字符
+ret = re.match("\d{2,5}","12345")  匹5次
