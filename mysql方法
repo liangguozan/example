@@ -1,0 +1,355 @@
+(mysql)
+create table employee(
+empno int auto_increment primary key comment '人物编号',
+empname varchar(10) comment '人物名称',
+nickname varchar(20) comment '昵称',
+job varchar(9) comment '工作岗位',
+mgr int comment '上班编号',
+hirdate date comment '入伙时间',
+salary int comment '薪水待遇',
+comm int comment '奖金',
+deptno int comment '所属部门'
+);
+
+1.查询学生表中性别为‘女’，体重超过60公斤的学生的所有信息
+
+    select * from stu where sex='女' and weight>60;
+
+2.查询学生表中1班或者2班中，身高超过190的学生
+
+    select * from stu where height>190 and cno in (1,2);
+
+3.查询学生表中3班学生里面考分在400和505.5之间的女生
+
+    select * from stu where cno =3 and score between 400 and 505.5;
+
+4.查询学生表中没有分配班级而且是女生的学生
+
+    select * from stu where cno is null and sex='女';
+
+5.在学生表体重低于40公斤的学生，列出其姓名，身高，体重，总分以及总分占750分满分的百分比
+
+    select sname, height, weight, score, score/750  ‘分数百分比’ from stu where weight<40;
+
+6.在学生表中查找学生姓名，第二个字是‘侯’，或者 第一个字是‘张’且名字只有两个字的学生
+
+    select sname from stu where sname like  '_侯%' or sname like '张_';
+
+7. 找出学生中最高的身高、最轻的体重、平均高考分数、学生的总数
+
+    select max(height) '最高',min(weight) '最轻',avg(score) '平均分', count(*)  '学生总数' from stu ;
+
+8.1：查询出学生表中都有哪些班号，要求去除重复班号
+
+    select distinct cno from stu;
+
+8.2：列出学生表中不重复的班号和性别
+
+    select distinct cno, sex from stu;
+
+9.按照体重增序列出学生信息
+
+    select * from stu order by weight;
+
+10.展示已分班学生信息，先按照班号增序，再按照考分降序排列
+
+    select * from stu where cno is not null order by cno,score desc;
+
+11.显示学生性别，姓名，生日3列信息，先按第1列，再按第3列降序排序
+
+    select sex,sname,birth from stu order by sex,birth desc;
+
+12.显示stu表中考分最高的3名学生
+
+    select * from stu order by score desc limit 0,3;
+
+
+insert into class values
+(3, '3班', '孙权'),
+(2, '2班', '刘备'),
+(1, '1班', '曹操'),
+(4, '4班', '刘协');
+
+###  查询语句
+
+##### 单表查询
+
+- 1.1 全表查寻
+select * from employee;
+
+- 1.2 指定字段查询
+查询职员表中所有职员姓名和入职时间
+select empname,hirdate from employee;
+
+- 1.3剃重查询
+查询所有的职位
+select distinct job from employee;
+
+- 1.4单条件查询
+查询奖金大于10000的职员
+select * from employee where comn>10000;
+
+- 1.5多条件逻辑查询   and,or
+查询奖金大于10000并且职位是骑兵头领的职员
+select * from employee where comn>10000 and job="头领";
+查询奖金大于10000或者职位是骑兵头领的职员
+select * from employee where comn>10000 or job="骑兵头领";
+
+- 1.6范围查询  between..and     in
+查询奖金大于8000-10000的职员
+select * from employee where comn between 8000 and 10000;
+查寻岗位是头领，骑兵头领，五虎上将的职员
+select * from employee where job in("头领","骑兵头领","五虎上将");
+
+- 1.7空值查询  is null
+查看没有上级的员工
+select * from employee where mgr is null;
+
+- 1.8 模糊查询
+职级为头领的职员 %多字符  _单字符
+select * from employee where job like "%头领_";
+
+- 1.9排序查询
+按照工资升序查看职员信息   asc 升序(默认)，desc降序
+select * from employee order by salary asc;
+
+- 分页查询
+每页20条，查询第三页数据
+select * from employee order by salary asc limit 41,20;
+
+- 分组查询
+查看每个部门的员工姓名,group_concat将相同的行组合起来
+select group_concat(empname) from employee group by deptno;
+
+### 聚合查询
+
+- 聚合查询聚合查询，是通过 MySQL 内建的聚合函数，完成数据库中查询数据的聚合运算结果，如求和、求平均值等
+
+  - 1.1 count()
+  按照指定条件，查询数据便中的所有记录
+  select count(*) from employee;
+  按照指定的列查询记录数
+  select count(mgr) from employee;
+  分组查询不同小组的记录数
+  select deptno,count(*) from employee group by deptno;
+
+  - 1.2 sum()
+  求和函数，可以查询指定列所有数据的和
+  查询所有员工的奖金总和
+  select sum(comn) from employee;
+
+  - 1.3求平均值 avg()
+  求平均数函数，可以查询指定列所有数据的平均值
+  查询所有员工的平均奖金
+  select avg(comn) from employee;
+
+  - 1.4 max()
+  查询指定列所有数据的最大值
+  查询所有员工的最高奖金
+  select max(comn) from employee;
+
+  - 1.5min()
+  查询指定列所有数据的最小值
+  查询所有员工的最低奖金
+  select min(comn) from employee;
+
+##### mysql常用字符串函数
+
+- char_length(str)
+  计算str中有多少个字符
+  例：查看字符串“我叫张伟强” 有几个字
+  select char_length("我叫张伟强");
+  查询学生表中名字是三个字的有哪些？
+  select sname,char_length(sname) from stu where char_length(sname)=3;
+
+- concat(str1,str2)
+  把参数str1和str2拼成一个字符串
+  例：把“我是”和“张伟强”拼接起来
+  select concat("我是","张伟强");
+  输出已分班学生的姓名和班级，以 “xxx是xx班”的形式打印结果
+  select concat(sname,"是",cno,"班") from stu where cno is not null;
+
+- sustring(str,pos,len)
+  把字符床str从第pos位起，截取len为
+  例：
+  把“我是张伟强” 从第3位起，截取3位字符
+  select substring("我是张伟强",3,3);
+  查询二班的同学有哪些姓氏
+  select sname,substring(sname,1,1) from stu where cno=2;
+
+- round(num,n)
+  对数字进行四舍五入运算
+  例：15.3475，保留两位小数
+  select round(15.3475,2);
+  计算肥胖学生"许褚"的BMI值，四舍五入保留2位小数， 体重/身高^2
+  select round(weight/(height/100*height/100),2) from stu where sname="许褚";
+
+##### mysql常用日期函数
+
+- year(date1) ,获取date1的年份
+
+- month(date),获取date1的月份
+  获取当前年份
+  select year("2020-05-25");
+  获取当前月份
+  select month("2020-05-25");
+  例1：学生表中哪些同学是1990年出生的
+  select sname,birth,year(birth) from stu where year(birth)=1990;
+  例1：学生表中哪些同学是8月份出生的
+  select sname,birth,month(birth) from stu where month(birth)=8;
+
+- curdate()获取当前日期
+
+- curtime()获取当前时间
+
+- now()获取当前日期和时间
+
+- datediff(date1,date2),返回的是两个日期相隔的天数
+  例：计算2020年5月25日到2020年10月1日间隔的天数
+  select datediff("2020-5-25","2020-10-1");
+  计算学生表中的学生的年龄，显示姓名，生日，年龄(2位小数)，只显示小于22岁的同学
+  select round(datediff(curdate(),birth)/365,2) from stu;
+  select sname,birth,round(datediff(curdate(),birth)/365,2) from stu where round(datediff(curdate(),birth)/365,2)<22;
+
+##### mysql常用条件判断函数
+
+- if(expr,v1,v2)    ifnull(v1,v2)
+  如果expr表达式成立，返回v1的值
+  否则，返回v2的值
+  例：如果学生高考分数大于520分，其为统招生，否则为管培生，从学生表查找，显示姓名，考分，类型（统招/管培）
+  select sname,score,"stu" 类型 from stu;
+  select sname,score,if(score>520,"统招","管培") 类型 from stu;
+
+- case运算符
+  case when expr1 then v1 ...else vn  end
+  如果高考分数700分以上，优秀，600以上，良好，520以上，及格，否则，较差，按着此原则列出学生表中的学生，显示姓名，考分，等级
+  select sname,score,(case when score>=700 then "优秀" when score>=600 then "良好" when score>=520 then "及格" else "较差" end) 等级 from stu;
+
+##### 列的别名
+给列额外的名称代替原来的名称
+select sname [as] 姓名 from stu;  as可不写
+例：列出2班的学生姓名，性别，生日，表头用对应中文显示
+select sname 姓名,sex 性别,birth 生日 from stu;
+
+表的别名
+给表额外的名称代替原来的名称
+select s.sname,s.sex from stu as s;  as可以不写
+例：列出2班的学生的姓名，性别，生日
+select s.sname,s.sex,s.birth from stu s where s.cno=2;
+
+- order by字句
+  对查询结果按照指定的1列或者多列排序
+  分为增序和降序
+  增序asc ，默认可以不写
+  降序desc
+  对于数值，增序是从小到大
+  对于日期和时间，增序是由远到近
+  对于英文字符，增序是从a到z
+
+- group by
+  group by 按照指定的列对表数据进行分组
+  group by 后面跟的列叫分组特性列
+  使用grop by后，能选择的列通常只能包括分组特性列和聚合函数
+  按照班号分组，列出学生表的班号，统计每个班的平均身高，平均体重，人数，最高分，不包括未分班的同学
+  select cno 班号,avg(height) 平均身高,avg(weight) 平均体重,count(*),max(score) 最高分 from stu where cno is not null group by cno;
+
+- 完整的select 语句
+  select distince *
+  from 表名
+  where ...
+  group by...having...
+  order by...
+  limit ...
+
+- having字句
+  having是对group by产生的结果集进行过滤
+  having可以对分组特性列和聚合函数进行过滤
+
+  例1：按照学生出生年份分组，统计出所有学生每个出生年份的人数，最高分，最低分，按照年份排序，并从结果中找出人数超过两个，且最高分超过600的年份
+  select year(birth) 出生年份,count(*) 人数,max(score) 最高分,min(score) 最低分 from stu group by year(birth) having count(*)>2 and max(score)>600 order by 1;
+
+  例2：找出已分班学生中，哪些班学生的平均身高超过175，列出其班号和人数
+  select cno,avg(height) from stu where cno is not null group by cno;
+  select cno 班号,avg(height) 平均身高 from stu where cno is not null group by cno having avg(height)>175;
+
+  例3：找出已分班学生中，哪些班的每个人的身高都超过165，列出班号和人数
+  select cno,count(*) from stu where cno is not null group by cno having min(height)>165;
+
+  例4:统计1班的人数，列出班号和人数
+  方法1：
+  select cno,count(*) from stu group by cno having cno=1;
+  方法2：
+  select cno,count(*) from stu where cno=1;
+  第一种先使用group by统计，再用having过滤统计结果
+  统计过程中统计了和1班不相干的其他班级人数，浪费了系统资源，效率低
+  第二种，先用where过滤不相干的班级学生，然后直接统计1班的人数，效率高
+  where可以先把结果集缩小
+
+### 多表关联查询
+
+- 数据不可以放在同一张表，会造成大量的数据冗余
+
+  | 学号 | 学生姓名 | 班级 | 班主任 | 课程名称 | 分数 |
+  | :--: | -------- | ---- | ------ | -------- | ---- |
+  |  1   | 张伟强   | 1班  | 陈老师 | 语文     | 78   |
+  |  1   | 张伟强   | 1班  | 陈老师 | 数学     | 75   |
+  |  1   | 张伟强   | 1班  | 陈老师 | 物理     | 82   |
+  |  2   | 徐伟明   | 1班  | 陈老师 | 语文     | 85   |
+  |  2   | 徐伟明   | 1班  | 陈老师 | 数学     | 83   |
+  |  3   | 徐伟明   | 1班  | 陈老师 | 物理     | 89   |
+
+  如果班主任变了，会修改很多地方
+
+  使用多张表，建立外键
+
+  外键：保持数据的一致性，完整性
+
+- 多表关联关系
+
+  - 一对一关系
+
+    通过主键关联主键实现
+
+    通过外键关联主键可以实现
+
+    案例：游戏用户（user）和账号(game_num)
+
+- 一对一实现
+
+  ```
+  第一种方式，通过主键关联主键实现，建完表后添加外键
+  用户表user
+  create table user(
+  	id int primary key auto_increment,
+  	name varchar(50),
+  	age int);
+  账号表game_num
+  create table game_num(
+  	id int primary key auto_increment,
+  	nickname varchar(50),
+  	level int);
+  没有添加外键约束可以任意删除
+  外键
+  alter table game_num
+  	add constraint foreign key(id) references user(id);
+  constraint可以省略
+
+  添加数据
+  insert into user values(1,"张伟强",22);
+  insert into game_num values(1,"国服李白",15);
+  insert into game_num values(2,"国服韩信",25); --error
+
+  第二种方式实现：建表的时候添加外键
+  用户表user
+  create table user(
+  	id int primary key auto_increment,
+  	name varchar(50),
+  	age int);
+  账号表game_num
+  create table game_num(
+  	id int primary key auto_increment,
+  	nickname varchar(50),
+  	level int,
+  	foreign key(id) references user(id)
+  	);
+  ```
