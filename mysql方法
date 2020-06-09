@@ -285,34 +285,15 @@ select s.sname,s.sex,s.birth from stu s where s.cno=2;
   第二种，先用where过滤不相干的班级学生，然后直接统计1班的人数，效率高
   where可以先把结果集缩小
 
-### 多表关联查询
+### 多表关联关系
 
-- 数据不可以放在同一张表，会造成大量的数据冗余
+- 一对一关系
 
-  | 学号 | 学生姓名 | 班级 | 班主任 | 课程名称 | 分数 |
-  | :--: | -------- | ---- | ------ | -------- | ---- |
-  |  1   | 张伟强   | 1班  | 陈老师 | 语文     | 78   |
-  |  1   | 张伟强   | 1班  | 陈老师 | 数学     | 75   |
-  |  1   | 张伟强   | 1班  | 陈老师 | 物理     | 82   |
-  |  2   | 徐伟明   | 1班  | 陈老师 | 语文     | 85   |
-  |  2   | 徐伟明   | 1班  | 陈老师 | 数学     | 83   |
-  |  3   | 徐伟明   | 1班  | 陈老师 | 物理     | 89   |
+  通过主键关联主键实现
 
-  如果班主任变了，会修改很多地方
+  通过外键关联主键可以实现
 
-  使用多张表，建立外键
-
-  外键：保持数据的一致性，完整性
-
-- 多表关联关系
-
-  - 一对一关系
-
-    通过主键关联主键实现
-
-    通过外键关联主键可以实现
-
-    案例：游戏用户（user）和账号(game_num)
+  案例：游戏用户（user）和账号(game_num)
 
 - 一对一实现
 
@@ -353,3 +334,517 @@ select s.sname,s.sex,s.birth from stu s where s.cno=2;
   	foreign key(id) references user(id)
   	);
   ```
+
+- 一对多关系
+
+  通过外键关联可以实现，外键添加可以添加在多的一方
+
+  中间表进行关联，多的一方设置唯一约束
+
+  案例：店铺（shop），商品（goods）
+
+  ```
+  通过外键关联可以实现，外键添加可以添加在多的一方
+  创建店铺表
+  create table shop(
+  	id int primary key,
+  	sname varchar(50)
+  	);
+  创建商品表
+  create table goods(
+  	id int primary key,
+  	gname varchar(50),
+  	price float,
+  	sid int
+  	);
+  添加外键约束
+  alter table goods(
+  	add foreign
+      references shop(id)
+  	);
+
+  insert into shop values(1,"小米旗舰店");
+  insert into goods values(1,"小米10",3999,1);
+  insert into goods values(2,"平衡车",2999,1);
+  insert into goods values(3,"小米笔记本",5999,1);
+
+
+  中间表进行关联，多的一方设置唯一约束
+  创建店铺表
+  create table shop(
+  	id int primary key,
+  	sname varchar(50)
+  	);
+  创建商品表
+  create table goods(
+  	id int primary key,
+  	gname varchar(50),
+  	price float,
+  	);
+  关系表
+  create table shop_goods(
+  	id int primary key,
+  	sid int,
+  	foreign key(sid) references shop(id),
+  	gid int unique,
+  	foreign key(gid) references goods(id)
+  );
+  insert into shop values(1,"小米旗舰店");
+  insert into goods values(1,"小米10",3999);
+  insert into goods values(2,"平衡车",2999);
+  insert into goods values(3,"小米笔记本",5999);
+  insert into shop_goods values(1,1,1);
+  insert into shop_goods values(2,1,2);
+  insert into shop_goods values(3,1,3);
+  ```
+
+- 多对对关系
+
+  - 中间表多对多关联，不设置唯一约束即可
+  - 案例：学生(stu)和课程(course)
+
+  ```
+  创建学生表
+  create table stu(
+  	id int primary key,
+  	sname varchar(50)
+  	);
+  创建课程表
+  create table course(
+  	id int primary key,
+  	cname varchar(50)
+  	);
+  关系表
+  create table stu_course(
+  	id int primary key,
+  	sid int,
+  	foreign key(sid) references stu(id),
+  	cid int,
+  	foreign key(cid) references course(id)
+  );
+  张伟强选了 语文，数学和英语
+  张威选了 数学和物理
+  插入学生数据
+  insert into stu values(1,"张伟强");
+  insert into stu values(2,"张威");
+  插入课程数据
+  insert into course values(1,"语文"),(2,"数学"),(3,"英语"),(4,"物理");
+  建立关系
+  insert into stu_course values(1,1,1);
+  insert into stu_course values(2,1,2);
+  insert into stu_course values(3,1,3);
+  insert into stu_course values(4,2,1);
+  insert into stu_course values(5,2,4);
+  ```
+
+
+
+### 多表连接查询
+
+- 比单表查询会耗费更多的系统资源
+
+  ```
+  创建两个测试表a和b
+  create table a(id int,name varchar(10));
+  create table b(id int,name varchar(10));
+
+  insert into a values(1,"a")
+  insert into a values(2,"b")
+  insert into a values(4,"d")
+
+  insert into b values(1,"x")
+  insert into b values(2,"y")
+
+  分类
+  交叉连接
+  不指定条件连接，结果集就是笛卡尔积，记录数就是a表记录m乘以b表记录n
+  select * from a cross join b;
+  select * from a join b;
+
+  内连接
+  指定条件连接，结果集包含符合连接条件的记录数
+  select * from a inner join b on a.id=b.id;
+  select * from a join b on a.id=b.id;
+
+  左连接(左外连接)
+  指定条件连接，结果集包含左表全部记录，右表中符合连接条件的记录和右表中不符合连接条件的记录(用NULL填充)
+  select * from a left outer join b on a.id=b.id;
+  select * from a left join b on a.id=b.id;
+
+  右连接(右外连接)
+  指定条件连接，结果集包含右表全部记录，左表中符合连接条件的记录和左表中不符合连接条件的记录(用NULL填充)
+  select * from a right outer join b on a.id=b.id;
+  select * from a right join b on a.id=b.id;
+  ```
+
+- 案例操作
+
+  ```
+  查看 近卫 部门所有员工信息
+  select * from employee,department where employee.deptno=department.deptno and department.deptname="近卫";
+
+  查询每个部门有哪些员工（内连接）
+  select * from employee e inner join department d on e.deptno=d.deptno;
+
+  查询每个部门有哪些员工（左连接）
+  select * from employee e left join department d on e.deptno=d.deptno;
+
+  查询每个部门有哪些员工（右连接）
+  select * from employee e right join department d on e.deptno=d.deptno;
+
+  stu和class多表连接查询
+  例1：显示学生的学号，姓名，性别，班号，班级名称以及对应班主任，按照班号和学号排序
+  select s.sno 学号,s.sname 姓名,s.sex 性别,s.cno 班号,c.cname 班级名称,c.teacher 班主任 from stu s inner join class c on s.cno=c.cno order by s.cno,s.sno;
+
+  例2：显示学生的学号，姓名，性别，班号，班级名称以及对应班主任，无班主任的显示“暂无”，按照班号和学号排序
+  select s.sno 学号,s.sname 姓名,s.sex 性别,s.cno 班号,c.cname 班级名称,if(c.teacher is null,"暂无",c.teacher) 班主任 from stu s left join class c on s.cno=c.cno order by s.cno,s.sno;
+
+  select s.sno 学号,s.sname 姓名,s.sex 性别,s.cno 班号,c.cname 班级名称,ifnull(c.teacher,"暂无") 班主任 from stu s left join class c on s.cno=c.cno order by s.cno,s.sno;
+
+  ```
+
+- 复合查询
+
+  - 用集合运算符对多个查询结果进行运算，产生新的查询结果集
+
+    ```
+    对两个结果进行并集操作
+    并集 union，union all
+    交集
+    差集
+
+    示例：
+    创建class1表
+    create table class1 as select * from class where cno=1;
+    insert into class1 values(5,'5班',"张伟强");
+
+    例1：查看class和class1表的并集，重复记录，重复显示
+    select * from class union all select * from class1;
+
+    例2：查看class和class1表的交集
+    select c.cno,c.cname,c.teacher from class c join class1 c1 on c.cno=c1.cno;
+
+    例3：查看class和class1表的差集，class中有，class1没有的
+    1.左连接查询
+    select * from class c left join class1 c1 on c.cno=c1.cno;
+    2.去除相同行
+    select * from class c left join class1 c1 on c.cno=c1.cno where c1.cno is null;
+    3.取出右边的显示
+    select c.cno,c.cname,c.teacher from class c left join class1 c1 on c.cno=c1.cno where c1.cno is null;
+
+    例4：查看class和class1表的差集，class1中有，class没有的
+    1.右连接查询
+    select * from class c right join class1 c1 on c.cno=c1.cno;
+    2.去除相同行
+    select * from class c right join class1 c1 on c.cno=c1.cno where c.cno is null;
+    3.取出右边的显示
+    select c1.cno,c1.cname,c1.teacher from class c right join class1 c1 on c.cno=c1.cno where c.cno is null;
+    ```
+
+- 子查询
+
+  结构
+
+  select **列1，列2**...from 表名 where 列=**值** group by 分组列 having 分组列=**值**  order by **列**
+
+  使用一个查询语句实现更复杂的查询，嵌套的select 往往被称为子查询，需要用（）括起来
+
+  - 非关联子查询：子查询可以单独用于主查询执行，仅执行一次，效率较高
+
+  - 关联子查询：子查询不可以单独用于主查询执行，如果主查询有N行，子查询将执行N次，效率相对较低，但是灵活度高
+
+  - ```
+    非关联子查询
+    例1：查询学生中哪些人比张飞的体重重？
+    select weight from stu where sname="张飞";
+    select * from stu where weight>(select weight from stu where sname="张飞");
+
+    例2：2班3班中哪些同学的身高比1班的平均身高高？
+    select avg(weight) from stu where cno=1;
+    select * from stu where cno in (2,3) and height>(select avg(weight) from stu where cno=1);
+
+    例3：每个班的高考状元
+    select cno,max(score) from stu group by cno;
+    select * from stu where (cno,score) in (select cno,max(score) from stu group by cno)
+
+    例4：哪些同学的体重比所有班的平均体重重？
+    select avg(weight) from stu group by cno;
+    select * from stu where weight>all(select avg(weight) from stu group by cno);
+    all ：比所有的值都大
+    any：比所有的值都小
+
+    例5：哪些同学的身高高于本班平均身高？
+    select cno,avg(height) from stu where cno is not null group by cno;
+    select * from stu s,(select cno,avg(height) havg where cno is not null group by cno) a  where s.cno=a.cno and s.height>a.havg and s.cno is not null;
+
+    例6：不用多表连接方式，列出3班的学生姓名和3班的班主任
+    select s.sname 学生姓名,(select teacher from class where cno=3) 班主任  from stu s where s.cno=3;
+    ```
+
+  - ```
+    关联子查询
+    例1：不用多表连接的方式，列出每个学生的班号，姓名，和所在班的班主任
+    select s.cno 班号,s.sname 姓名,(select teacher from class where cno=s.cno) from stu s where s.cno is not null order by 1;
+    #子查询不能够单独执行，主查询一般需要起别名
+
+    例2：使用关联子查询，在已分班的学生中列出身高高于本班平均身高的学生
+    select * from stu s1 where s1.cno is not null and s1.height>(select avg(height) from stu s2 where s2.cno=s1.cno);
+
+    例3：体重最重的学生的班主任是谁？
+    1.最重的体重
+    select max(weight) from stu;
+    2.查询每个学生的班主任
+    select sname,weight,teacher from stu,class where stu.cno=class.cno;
+    3.加上条件
+    select sname,weight,teacher from stu,class where stu.cno=class.cno and weight=(select max(weight) from stu);
+
+    练习1.从学生表中和班级表中找出姓“曹”的人，标注其角色，学生或老师
+    select sname from stu where sname like "曹%";
+    select sname,"学生" 角色 from stu where sname like "曹%";
+
+    select teacher,"老师" 角色 from class where teacher like "曹%";
+    取并集 union all
+    select sname,"学生" 角色 from stu where sname like "曹%" union all select teacher,"老师" 角色 from class where teacher like "曹%";
+    ```
+
+
+
+### 事务
+
+- 事务是一种机制，一个操作序列，包含了一组数据库操作命令。事务是一个不可分割的工作逻辑单元，在数据库执行并发操作时，事务是最小的控制单元。
+
+- ```
+  A用户和B用户是银行的储户，现在A要给B转500块钱
+  检查账户余额>=500元
+  A账户扣除500元
+  B账户增加500元
+  正常流程走下来，A账户扣除500元，B账户增加500元
+  如果A扣了钱之后，系统出了故障，A损失了500，B没有收到500元
+  所谓事务，就是一个操作序列要么都执行，要么都不执行，是一个不可分割的工作单位
+  ```
+
+- 数据库引擎
+
+  - 数据库存储引擎，是数据库底层构建的核心，负责底层数据持久化和软件交互的序列化操作、
+
+    校验过程以及交互过程，通过数据库存储引擎完成创建、查询、更新和删除数据。不同的存
+
+    储引擎提供不同的存储机制、索引技巧、锁定水平等功能，使用不同的存储引擎，还可以 获
+
+    得特定的功能。现在许多不同的数据库管理系统都支持多种不同的数据引擎。
+
+  - InnoDB
+
+  InnoDB 是事务型数据库的首选引擎，支持事务安全表（ACID），支持行锁定和外键，上
+
+  图也看到了，InnoDB 是默认的 MySQL 引擎。
+
+  - MyISAM
+
+  MyISAM 基于 ISAM 存储引擎，并对其进行扩展。它是在 Web、数据仓储和其他应用环境下
+
+  最常使用的存储引擎之一。MyISAM 拥有较高的插入、查询速度，但**不支持事物**。
+
+- 事务的特性
+
+  - 原子性(atomicity)
+  - 一致性(consistency)
+  - 隔离性(isolation)
+  - 持久性(durability)
+
+  ```
+  原子性：一个事务必须视为一个不可分割的最小的工作单元，整个事务中的所有操作要么全部执行成功，要么全部失败回滚，对于一个事务来说，不可能只执行其中的一部分操作
+
+  一致性：从一个一致性的状态转换到另一个一致性的状态，如现在A要给B转500块钱，A账户扣除500元，B账户增加500元
+
+  隔离性：同一时间，只允许一个事务请求同一数据，不同的事务之间彼此没有任何干扰。
+
+  持久性：一旦事务提交，其所做的修改会永久的保存到数据库
+  ```
+
+- 事务的隔离级别
+
+  如果数据库严格按照四大特性进行管理，数据库的操作会比较缓慢
+
+  ```
+  Read Uncommitted(读未提交)   脏读，不可重复读
+  操作效率最高，数据稳定性最差
+  一个事务可以读取到另一个事务未提交的更新结果
+
+  Read committed(读已提交)    不可重复读，幻读
+  操作效率较高，数据稳定性较差
+  一个事务可以读取到另一个事务已提交的更新结果
+
+  Repeat Read（可重复读）     幻读
+  操作效率较低，数据稳定性较差
+  在整个事务过程中，对同一个数据的读取结果是相同的，不管其他事务是否同时在对同一笔数据进行更新，提交
+
+  Serializable（可串行化）序列化
+  操作效率最低，数据稳定性最高
+  所有的操作，全部排队，任何事情必须等待前一件事情全部完成才能开始
+  ```
+
+- 事务的并发问题
+
+  ```
+  脏读（dirty read）：A 事务读取 B 事务尚未提交的更改数据，并在这个数据基础上操作。如 果 B 事务回滚，那么 A 事务读到的数据根本不是合法的，称为脏读。
+
+  不可重复读（unrepeatable read）：A 事务读取了 B 事务已经提交的更改（或删除）数据。比 如 A 事务第一次读取数据，然后 B 事务更改该数据并提交，A 事务再次读取数据，两次读取 的数据不一样。
+
+  幻读（phantom read）：A 事务读取了或意识到了 B 事务已经提交的新增数据。注意和不可重复读的区别，这里是新增，不可重复读是更改（或删除）。
+  幻读的重点在于新增或者删除(数据条数的变化)
+  目前5000元工资的员工有10人
+  事务1，读取工资为5000的员工
+  事务2，向数据库表插入一条员工记录，工资也是5000
+  事务1，再次读取工资为5000的员工
+  ```
+
+- 事务的操作
+
+  ```
+  开启事务
+  begin;
+  或者
+  start transaction
+
+  提交事务
+  commit;
+
+  回滚事务
+  rollback;
+
+  设置事务的隔离级别
+  set session transaction isolation leval 隔离级别;
+  ```
+
+- 案例
+
+  ```
+  create tabel user(
+  	id int primary key auto_increment,
+  	name varchar(20));
+
+  一、读未提交与脏读
+  终端1 设置事务隔离级别并开启，终端2，设置事务隔离级别并开启
+  set session transaction isolation level read uncommitted;
+  开启事务  begin;
+  插入数据  insert into user values(1,"张威");
+  1还没有提交，2就可以读取到数据
+
+  二、读已提交和不可重复读
+  终端1 设置事务隔离级别并开启，终端2，设置事务隔离级别并开启
+  set session transaction isolation level read  committed;
+  开启事务  begin;
+  插入数据  insert into user values(1,"张威");
+  1还没有提交，2不可以读取到数据，但A提交之后，B就读取到了
+
+  三、可重复读
+  终端1 设置事务隔离级别并开启，终端2，设置事务隔离级别并开启
+  set session transaction isolation level repeatable read;
+  开启事务  begin;
+  插入数据  insert into user values(1,"张威");
+  1还没有提交，2不可以读取到数据，但A提交之后，B就读取到了
+  无法避免幻读
+  在1插入数据前，2查看user为空
+  在1插入数据后并并提交，2查看user为空
+  在2中执行insert into user values(1,"张威");
+  出现主键冲突，插入不进去，仿佛数据存在但是看不到，出现了幻觉
+  ```
+
+### 索引
+
+- 索引：数据库中的一个数据对象，用来提升查询效率
+
+- 索引的种类
+
+  ```
+  普通索引：可以为空，可以重复
+  主键索引：不可为空，不可以重复
+  唯一索引：可以为空，不可以重复
+  ```
+
+- 索引的优点和缺点
+
+  ```
+  索引的优点：创建索引可以大大提高系统的性能。
+  • 第一，通过创建唯一性索引，可以保证数据库表中每一行数据的唯一性。
+  • 第二，可以大大加快数据的检索速度，这也是创建索引的最主要的原因。
+  • 第三，可以加速表和表之间的连接，特别是在实现数据的参考完整性方面特别有意义。
+  • 第四，在使用分组和排序子句进行数据检索时，同样可以显著减少查询中分组和排序的时间。
+
+  索引的缺点：增加索引也有许多不利的方面
+  • 第一，创建索引和维护索引要耗费时间，这种时间随着数据量的增加而增加。
+  • 第二，索引需要占物理空间，除了数据表占数据空间之外，每一个索引还要占一定的物理空间，如果要建立聚簇索引，那么需要的空间就会更大。
+  • 第三，当对表中的数据进行增加、删除和修改的时候，索引也要动态的维护，这样就 降低了数据的维护速度。
+  ```
+
+- **索引的使用**
+
+  ```
+  普通索引 ALTER TABLE 表名 ADD INDEX(字段名);
+  唯一索引 ALTER TABLE 表名 ADD UNIQUE(字段名);
+  主键索引
+  主键本身就是主键索引，我们创建表，添加了主键，就相当于添加了主键索引
+  ALTER TABLE 表名 ADD PRIMARY KEY(字段名);
+  多列索引
+  ALTER TABLE 表名 ADD INDEX(字段名,字段名,字段名);
+  删除索引
+  DROP INDEX 索引名 ON 表名;删除主键索引需要先删除主键的自增属性
+  注意：由于索引和数据是存储在同一个文件中，因此在使用独立表空间时，InnoDB引擎使用drop命令删除索引并不会释放磁盘空间
+  ALTER TABLE 表名 DROP PRIMARY KEY
+  查看索引
+  SHOW INDEX FROM student;
+  ```
+
+- 百万数据查询实验
+
+  ```
+  存储过程
+  delimiter $$
+  #存储过程名proc1，参数cnt为准备插入数据行的数量，调用时输入该值
+  create procedure proc1(cnt int)
+  begin
+    #定义变量i为整型，默认值为1
+    declare i int default 1;
+    #开启事务
+    start transaction;
+    #MySQL repeat循环结构
+  repeat
+  	#插入test库t表，id列值对应为i，
+  #name列对应值为字符‘a’与i值合并后的字符串
+  	insert into test.t (id,name) values (i,concat('a',i));
+  	#变量i自增1
+  	set i = i + 1;
+    #当i值大于输入cnt值时，退出循环体
+    until i > cnt end repeat;
+    commit;
+  end$$
+  delimiter ;
+
+  创建数据库和数据表
+  create database test;
+  use test;
+  create table t(id int,name varchar(30));
+  调用存储过程，设置插入一百万行数据
+  call proc1(1000000);
+  ```
+
+  ```
+  实验一：百万记录取1条
+  select * from t where id=1;
+  select * from t where id=900000;
+  创建索引后再查询
+  create unique index idx_id on t(id);
+  drop index idx_id on t;
+  ```
+
+  - 总结：
+
+    主要优点使select查询速度大幅度提高，包括更新少量数据
+
+    副作用：1.占用额外的磁盘空间
+
+    ​				2.使得数据表的增删改操作变慢
+
+
+

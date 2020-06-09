@@ -46,8 +46,8 @@ list    [1,2,"A","ASFASF",A]   逗号分隔，中括号包围，有序，可以�
 列表.insert(1,"hello")=将元素插入指定索引位
 列表.extend("hello")=将序列元素依次添加到列表尾部（分解加）
 
-列表.sort()=从大到小排序
-列表.sort(reverse=True)=从小到大排序
+列表.sort()=从小到大排序
+列表.sort(reverse=True)=从大到小排序
 列表.reverse()=按照索引倒序
 列表.index("hello")=查找元素，返回索引，找不到就报错
 列表.count("hello")=计数
